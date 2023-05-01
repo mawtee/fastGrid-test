@@ -5,36 +5,48 @@ Spyder Editor
 This is a temporary script file.
 """
 
+import panel_highcharts as ph
 import panel as pn
-import numpy as np
-import holoviews as hv
 
-pn.extension(sizing_mode = 'stretch_width')
 
-ACCENT_COLOR = pn.template.FastGridTemplate.accent_base_color
-XS = np.linspace(0, np.pi)
 
-def sine(freq, phase):
-    return hv.Curve((XS, np.sin(XS * freq + phase))).opts(
-        responsive=True, min_height=400, title="Sine", color=ACCENT_COLOR
-    ).opts(line_width=6)
 
-def cosine(freq, phase):
-    return hv.Curve((XS, np.cos(XS * freq + phase))).opts(
-        responsive=True, min_height=400, title="Cosine", color=ACCENT_COLOR
-    ).opts(line_width=6)
+ph.config.theme("auto")
+pn.extension('highchart')
 
-freq = pn.widgets.FloatSlider(name="Frequency", start=0, end=10, value=2)
-phase = pn.widgets.FloatSlider(name="Phase", start=0, end=np.pi)
+widget = pn.widgets.TextInput(name='A widget', value='A string')
 
-sine = pn.bind(sine, freq=freq, phase=phase)
-cosine = pn.bind(cosine, freq=freq, phase=phase)
+configuration = {
+    "title": {"text": "HighChart Pane"},
+    "series": [
+        {
+            "name": "series1",
+            "data": [1, 2, 3, 4, 5],
+        }
+    ]
+}
+chart = ph.HighChart(object=configuration, sizing_mode="stretch_width")
+
 
 template = pn.template.FastGridTemplate(
     site="Panel", title="FastGridTemplate",
-    sidebar=[pn.pane.Markdown("## Settings"), freq, phase],
+    sidebar=[pn.pane.Markdown("## Settings")],
 )
 
-template.main[:3, :6] = pn.pane.HoloViews(hv.DynamicMap(sine), sizing_mode="stretch_both")
-template.main[:3, 6:] = pn.pane.HoloViews(hv.DynamicMap(cosine), sizing_mode="stretch_both")
+
+
+
+template = pn.template.FastGridTemplate(
+   theme="dark",
+                                       site="", title="Interactive stop and search tracker",
+                                        sidebar=[
+                                           pn.Spacer(height=15), widget, pn.Spacer(height=15)],
+                                        sidebar_width=410, header_background='#130C16',
+                                        header_neutral_color='#D9D9D9', accent_base_color='#D9D9D9', corner_radius=6, shadow=True,
+                                        # , cols = {'lg': 18, 'md': 12, 'sm': 8, 'xs': 6, 'xxs': 4}
+                                        prevent_collision=True, theme_toggle=False
+                                        )
+
+template.main[:2, :7] = pn.Column(chart, sizing_mode="stretch_both")
+template.main[:2, 7:12] = pn.Column(chart, sizing_mode="stretch_both")
 template.servable()
