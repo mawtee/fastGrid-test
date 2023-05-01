@@ -1,1 +1,1 @@
-web: panel serve  --port=$PORT temp.py --allow-websocket-origin=fastGrid-test.herokuapp.com
+web: panel serve  --port=$PORT temp.py --allow-websocket-origin=fastgrid-test.herokuapp.com
